@@ -1,6 +1,7 @@
 import random
 import string
 import argparse
+import pyperclip
 
 
 def generate_password(
@@ -12,6 +13,21 @@ def generate_password(
     allowed_punctuation=None,
     prohibited_punctuation=None,
 ):
+    """
+    Generate a random password with specified requirements.
+
+    Args:
+        length (int): Length of the password.
+        require_alpha (int): Minimum number of alphabetic characters.
+        require_lower (int): Minimum number of lowercase characters.
+        require_upper (int): Minimum number of uppercase characters.
+        require_digits (int): Minimum number of digits.
+        allowed_punctuation (str, optional): String of allowed punctuation characters.
+        prohibited_punctuation (str, optional): String of prohibited punctuation characters.
+
+    Returns:
+        str: Generated password.
+    """
     # Define character sets
     lowercase = string.ascii_lowercase
     uppercase = string.ascii_uppercase
@@ -52,6 +68,18 @@ def generate_password(
 
 
 def main():
+    """
+    Main function to parse arguments and generate a password.
+
+    Usage:
+        python main.py [-sa] [-e]
+
+    Options:
+        -sa  Generate password for system type 2 (all punctuation allowed)
+        -e   Generate password for system type 1
+
+    If no options are provided, a default password is generated with a length between 12 and 20 characters.
+    """
     parser = argparse.ArgumentParser(description="Custom Password Generator")
     parser.add_argument(
         "-sa",
@@ -96,6 +124,8 @@ def main():
         )
 
     print(password)
+    pyperclip.copy(password)
+    print("Password copied to clipboard.")
 
 
 if __name__ == "__main__":
