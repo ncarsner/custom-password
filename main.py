@@ -63,8 +63,7 @@ def main():
     )
     args = parser.parse_args()
 
-    # prohibited_punctuation = "&<>”‘%~'"`@{}/\"
-    prohibited_punctuation = None
+    prohibited_punctuation = "&<>”‘%~'\"`@{}/\\"
 
     if args.e:
         password = generate_password(
