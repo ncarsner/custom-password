@@ -25,7 +25,7 @@ def generate_password(
         require_upper (int): Minimum number of uppercase characters.
         require_digits (int): Minimum number of digits.
         allowed_punctuation (str, optional): String of allowed punctuation characters.
-        prohibited_punctuation (str, optional): String of prohibited punctuation characters.
+        prohibited_punctuation (str, optional): String of prohibited punctuation.
 
     Returns:
         str: Generated password.
