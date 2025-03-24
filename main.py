@@ -56,44 +56,26 @@ def main():
     parser.add_argument(
         "-sa",
         action="store_true",
-        help="Generate password for system type 2 (with all punctuation allowed)",
-    )
-    parser.add_argument(
-        "-s",
-        action="store_true",
-        help="Generate password for system type 2 (with some punctuation allowed)",
+        help="Generate password for system type 2 (all punctuation allowed)",
     )
     parser.add_argument(
         "-e", action="store_true", help="Generate password for system type 1"
     )
     args = parser.parse_args()
 
-    prohibited_punctuation = "',{}"  # Define prohibited punctuation characters
+    # prohibited_punctuation = "&<>”‘%~'"`@{}/\"
+    prohibited_punctuation = None
 
     if args.e:
-        # System 1 (punctuation limited to !, $, #, and ;)
         password = generate_password(
             random.randint(8, 32),
             require_alpha=2,
             require_lower=1,
             require_upper=1,
             require_digits=2,
-            allowed_punctuation="!$#;",
             prohibited_punctuation=prohibited_punctuation,
         )
     elif args.sa:
-        # System 2 (all punctuation allowed)
-        password = generate_password(
-            random.randint(15, 32),
-            require_alpha=2,
-            require_lower=1,
-            require_upper=1,
-            require_digits=2,
-            allowed_punctuation=string.punctuation,
-            prohibited_punctuation=prohibited_punctuation,
-        )
-    elif args.s:
-        # System 2 (limited punctuation allowed, with some characters removed)
         password = generate_password(
             random.randint(15, 32),
             require_alpha=2,
@@ -104,7 +86,6 @@ def main():
             prohibited_punctuation=prohibited_punctuation,
         )
     else:
-        # Default system (no flag, limited punctuation, 12-20 characters)
         password = generate_password(
             random.randint(12, 20),
             require_alpha=2,
