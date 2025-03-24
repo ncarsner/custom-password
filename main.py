@@ -1,3 +1,5 @@
+#!../custom-password/.venv/Scripts/python
+
 import random
 import string
 import argparse
