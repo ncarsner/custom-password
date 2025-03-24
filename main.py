@@ -80,7 +80,7 @@ def main():
         -sa  Generate password for system type 2 (all punctuation allowed)
         -e   Generate password for system type 1
 
-    If no options are provided, a default password is generated with a length between 12 and 20 characters.
+    If no options are provided, password with length 12-20 characters is generated.
     """
     parser = argparse.ArgumentParser(description="Custom Password Generator")
     parser.add_argument(
