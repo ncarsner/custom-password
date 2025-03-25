@@ -12,6 +12,7 @@ def generate_password(
     require_lower=1,
     require_upper=1,
     require_digits=2,
+    require_punctuation=1,
     allowed_punctuation=None,
     prohibited_punctuation=None,
 ):
@@ -93,36 +94,38 @@ def main():
     )
     args = parser.parse_args()
 
-    prohibited_punctuation = "&<>”‘%~'\"`@{}/\\"
-
     if args.e:
         password = generate_password(
             random.randint(8, 32),
             require_alpha=2,
             require_lower=1,
             require_upper=1,
-            require_digits=2,
-            prohibited_punctuation=prohibited_punctuation,
+            require_digits=1,
+            require_punctuation=1,
+            allowed_punctuation=".!#$*()+=",
+            prohibited_punctuation="&<>”‘%~'\"`@{}/\\",
         )
     elif args.sa:
         password = generate_password(
-            random.randint(15, 32),
-            require_alpha=2,
+            random.randint(15, 28),
+            require_alpha=1,
             require_lower=1,
             require_upper=1,
-            require_digits=2,
-            allowed_punctuation=string.punctuation,
-            prohibited_punctuation=prohibited_punctuation,
+            require_digits=1,
+            require_punctuation=1,
+            allowed_punctuation="`~!@#$%^&*()_+-={}|\\:\";'<>?,./",
+            prohibited_punctuation=None,
         )
     else:
         password = generate_password(
-            random.randint(12, 20),
-            require_alpha=2,
+            random.randint(8, 28),
+            require_alpha=1,
             require_lower=1,
             require_upper=1,
-            require_digits=2,
-            allowed_punctuation=string.punctuation,
-            prohibited_punctuation=prohibited_punctuation,
+            require_digits=1,
+            require_punctuation=1,
+            allowed_punctuation="`~!@#$%^&*()_+-={}|\\:\";'<>?,./",
+            prohibited_punctuation=None,
         )
 
     print(password)
