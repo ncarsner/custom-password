@@ -48,11 +48,22 @@ def generate_password(
         password = []
         password.extend(random.choices(lowercase, k=require_lower))
         password.extend(random.choices(uppercase, k=require_upper))
-        password.extend(random.choices(digits, k=require_digits))
+        password.extend(
+            random.choices(digits, k=require_digits if require_digits else 2)
+        )
+        password.extend(random.choices(punctuation, k=require_punctuation))
         password.extend(
             random.choices(
                 string.ascii_letters + string.digits + allowed_punctuation,
-                k=length - sum([require_lower, require_upper, require_digits]),
+                k=length
+                - sum(
+                    [
+                        require_lower,
+                        require_upper,
+                        require_digits if require_digits else 2,
+                        require_punctuation,
+                    ]
+                ),
             )
         )
 
@@ -75,11 +86,12 @@ def main():
     Main function to parse arguments and generate a password.
 
     Usage:
-        python main.py [-sa] [-e]
+        python main.py [-sa] [-e] [-d DIGITS]
 
     Options:
         -sa  Generate password for system type 2 (all punctuation allowed)
         -e   Generate password for system type 1
+        -d   Specify the number of digits in the password
 
     If no options are provided, password with length 12-20 characters is generated.
     """
@@ -92,37 +104,47 @@ def main():
     parser.add_argument(
         "-e", action="store_true", help="Generate password for system type 1"
     )
+    parser.add_argument(
+        "-d",
+        type=int,
+        default=8,
+        help="Specify the length of the password (default is 8)",
+    )
     args = parser.parse_args()
+
+    if args.d < 8:
+        print("Error: Password length must be at least 8 characters.")
+        exit(1)
 
     if args.e:
         password = generate_password(
-            random.randint(8, 32),
+            args.d,
             require_alpha=2,
             require_lower=1,
             require_upper=1,
-            require_digits=1,
+            require_digits=2,
             require_punctuation=1,
             allowed_punctuation=".!#$*()+=",
             prohibited_punctuation="&<>”‘%~'\"`@{}/\\",
         )
     elif args.sa:
         password = generate_password(
-            random.randint(15, 28),
+            args.d,
             require_alpha=1,
             require_lower=1,
             require_upper=1,
-            require_digits=1,
+            require_digits=2,
             require_punctuation=1,
             allowed_punctuation="`~!@#$%^&*()_+-={}|\\:\";'<>?,./",
             prohibited_punctuation=None,
         )
     else:
         password = generate_password(
-            random.randint(8, 28),
+            args.d,
             require_alpha=1,
             require_lower=1,
             require_upper=1,
-            require_digits=1,
+            require_digits=2,
             require_punctuation=1,
             allowed_punctuation="`~!@#$%^&*()_+-={}|\\:\";'<>?,./",
             prohibited_punctuation=None,
