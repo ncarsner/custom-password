@@ -1,16 +1,13 @@
-import pytest
-from main import generate_password
 import string
-
-# Import the main function from the main module
-from main import main
+import pytest
+from main import generate_password, main
 
 
 # Test the generate_password function with various parameters
 @pytest.mark.parametrize(
     "length, require_alpha, require_lower, require_upper, require_digits, allowed_punctuation, prohibited_punctuation, expected_length",
     [
-        (16, 2, 1, 1, 2, "&<>\"'%~'`@{}/\\", None, 16),
+        (16, 2, 1, 1, 2, "&<>\"'%~'`@{}/\\", "", 16),
         (20, 2, 1, 1, 2, string.punctuation, "", 20),
         (12, 2, 1, 1, 2, string.punctuation, "", 12),
     ],
@@ -29,10 +26,6 @@ def test_generate_password(
     Test the generate_password function to ensure it generates passwords
     that meet the specified criteria.
     """
-    if allowed_punctuation is None:
-        allowed_punctuation = ""
-    if prohibited_punctuation is None:
-        prohibited_punctuation = ""
     password = generate_password(
         length=length,
         require_alpha=require_alpha,
