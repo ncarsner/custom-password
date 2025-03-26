@@ -36,6 +36,7 @@ def generate_password(
     uppercase = string.ascii_uppercase
     digits = string.digits
     punctuation = string.punctuation
+    all_chars = string.ascii_letters + string.digits + string.punctuation
 
     # Remove prohibited punctuation from the allowed punctuation set
     if prohibited_punctuation:
@@ -48,19 +49,15 @@ def generate_password(
         password = []
         password.extend(random.choices(lowercase, k=require_lower))
         password.extend(random.choices(uppercase, k=require_upper))
-        password.extend(
-            random.choices(digits, k=require_digits if require_digits else 2)
-        )
-        password.extend(random.choices(punctuation, k=require_punctuation))
-        password.extend(
-            random.choices(
-                string.ascii_letters + string.digits + allowed_punctuation,
+        password.extend(random.choices(digits, k=require_digits))
+        password.extend(random.choices(allowed_punctuation, k=require_punctuation))
+        password.extend(random.choices(all_chars,
                 k=length
                 - sum(
                     [
                         require_lower,
                         require_upper,
-                        require_digits if require_digits else 2,
+                        require_digits,
                         require_punctuation,
                     ]
                 ),
@@ -86,35 +83,54 @@ def main():
     Main function to parse arguments and generate a password.
 
     Usage:
-        python main.py [-sa] [-e] [-d DIGITS]
+        python main.py [-sa] [-e] [-d <length>]
 
     Options:
-        -sa  Generate password for system type 2 (all punctuation allowed)
-        -e   Generate password for system type 1
-        -d   Specify the number of digits in the password
+        -sa  Generate password for system type 1 (all punctuation allowed, length between 15 and 28)
+        -e   Generate password for system type 2 (length between 8 and 32)
+        -d   Specify the length of the password
 
-    If no options are provided, password with length 12-20 characters is generated.
+    If no options are provided, password with length 8-28 characters is generated.
     """
     parser = argparse.ArgumentParser(description="Custom Password Generator")
     parser.add_argument(
         "-sa",
         action="store_true",
-        help="Generate password for system type 2 (all punctuation allowed)",
+        help="Generate password for system type 1 (all punctuation allowed, length between 15 and 28)",
     )
     parser.add_argument(
-        "-e", action="store_true", help="Generate password for system type 1"
+        "-e",
+        action="store_true",
+        help="Generate password for system type 2 (length between 8 and 32)",
     )
     parser.add_argument(
         "-d",
         type=int,
-        default=8,
-        help="Specify the length of the password (default is 8)",
+        help="Specify the length of the password",
     )
     args = parser.parse_args()
 
-    if args.d < 8:
-        print("Error: Password length must be at least 8 characters.")
-        exit(1)
+    if args.e and args.sa:
+        print("Error: Cannot use both -e and -sa flags together.")
+        raise SystemExit(1)
+    if args.sa:
+        if args.d is None:
+            args.d = 15
+        elif not (15 <= args.d <= 28):
+            print("Error: For -sa flag, length must be between 15 and 28.")
+            raise SystemExit(1)
+    elif args.e:
+        if args.d is None:
+            args.d = 8
+        elif not (8 <= args.d <= 32):
+            print("Error: For -e flag, length must be between 8 and 32.")
+            raise SystemExit(1)
+    else:
+        if args.d is None:
+            args.d = 8
+        elif not (8 <= args.d <= 28):
+            print("Error: Password length must be between 8 and 28 characters.")
+            raise SystemExit(1)
 
     if args.e:
         password = generate_password(

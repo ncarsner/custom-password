@@ -1,22 +1,17 @@
-@echo off
 REM Batch file to run Python script with optional flags
+@echo off
+setlocal
 
-REM Prompt the user to enter flags
-set /p flags=Enter flags (-e, -sa, -d <length>), or press Enter to proceed with default: 
+:: Prompt for optional flags
+set /p FLAG="Enter optional flag (-e, -sa): "
+set /p LENGTH="Enter password length (default is 8): "
 
-REM Check if flags are provided
-IF "%flags%"=="" (
-    REM If no flags entered, proceed with default behavior
-    echo Running script with default settings...
-    REM Activate virtual environment and run the script without any flags
-    call "C:\path\to\your\virtualenv\Scripts\activate.bat"
-    python "C:\path\to\your\script.py"
-) ELSE (
-    REM If flags are entered, run the script with the provided flags
-    echo Running script with flags: %flags%
-    call "C:\path\to\your\virtualenv\Scripts\activate.bat"
-    python "C:\path\to\your\script.py" %flags%
-)
+:: Set default length if not provided
+if "%LENGTH%"=="" set LENGTH=8
 
+:: Run the Python script with the provided flags and length
+call "C:\path\to\your\script.py" %FLAG% -d %LENGTH%
+
+endlocal
 REM End of the script
 pause
