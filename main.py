@@ -83,11 +83,12 @@ def main():
     Main function to parse arguments and generate a password.
 
     Usage:
-        python main.py [-sa] [-e] [-d <length>]
+        python main.py [-sa] [-e] [-z] [-d <length>]
 
     Options:
         -sa  Generate password for system type 1 (all punctuation allowed, length between 15 and 28)
         -e   Generate password for system type 2 (length between 8 and 32)
+        -z   Generate password for system type 3 (length between 6 and 72)
         -d   Specify the length of the password
 
     If no options are provided, password with length 8-28 characters is generated.
@@ -103,6 +104,11 @@ def main():
         action="store_true",
         help="Generate password for system type 2 (length between 8 and 32)",
     )
+    parser.add_arugment(
+        "-z",
+        action="store_true",
+        help="Generate password for system type 3 (length between 6 and 72)",
+    )
     parser.add_argument(
         "-d",
         type=int,
@@ -110,8 +116,8 @@ def main():
     )
     args = parser.parse_args()
 
-    if args.e and args.sa:
-        print("Error: Cannot use both -e and -sa flags together.")
+    if sum([args.e, args.sa, args.z]) > 1:
+        print("Error: Cannot use more than one flag type: [-e] [-sa] [-z]")
         raise SystemExit(1)
     if args.sa:
         if args.d is None:
@@ -124,6 +130,12 @@ def main():
             args.d = 8
         elif not (8 <= args.d <= 32):
             print("Error: For -e flag, length must be between 8 and 32.")
+            raise SystemExit(1)
+    elif args.z:
+        if args.d is None:
+            args.d = 6
+        elif not (6 <= args.d <= 72):
+            print("Error: For -z flag, length must be between 6 and 72.")
             raise SystemExit(1)
     else:
         if args.d is None:
@@ -154,6 +166,18 @@ def main():
             allowed_punctuation="`~!@#$%^&*()_+-={}|\\:\";'<>?,./",
             prohibited_punctuation=None,
         )
+    elif args.z:
+        password = generate_password(
+            args.d,
+            require_alpha=1,
+            require_lower=1,
+            require_upper=1,
+            require_digits=2,
+            require_punctuation=1,
+            # allowed_punctuation="`~!@#$%^&*()_+-={}|\\:\";'<>?,./",
+            allowed_punctuation="".join(string.punctuation),
+            prohibited_punctuation=None,
+        )
     else:
         password = generate_password(
             args.d,
@@ -162,7 +186,8 @@ def main():
             require_upper=1,
             require_digits=2,
             require_punctuation=1,
-            allowed_punctuation="`~!@#$%^&*()_+-={}|\\:\";'<>?,./",
+            # allowed_punctuation="`~!@#$%^&*()_+-={}|\\:\";'<>?,./",
+            allowed_punctuation="".join(string.punctuation),
             prohibited_punctuation=None,
         )
 
