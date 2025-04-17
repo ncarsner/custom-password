@@ -104,7 +104,7 @@ def main():
         action="store_true",
         help="Generate password for system type 2 (length between 8 and 32)",
     )
-    parser.add_arugment(
+    parser.add_argument(
         "-z",
         action="store_true",
         help="Generate password for system type 3 (length between 6 and 72)",
